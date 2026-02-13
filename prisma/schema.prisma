@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ZeroWaste — Data Models
+// ============================================
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String
+  role      Role
+  phone     String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Role-specific
+  vehicleType  String? // Volunteer
+  availability String? // Volunteer
+  dailyCapacity Int?   // NGO
+  operatingRadius Float? // NGO (km)
+  
+  donations    Donation[]  @relation("DonorDonations")
+  claims       Claim[]     @relation("NgoClaims")
+  deliveries   Claim[]     @relation("VolunteerDeliveries")
+  auditLogs    AuditLog[]
+}
+
+enum Role {
+  DONOR
+  NGO
+  VOLUNTEER
+  ADMIN
+}
+
+model Donation {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  donorId        String     @db.ObjectId
+  donor          User       @relation("DonorDonations", fields: [donorId], references: [id])
+  
+  foodType       String     // "Cooked Meals", "Raw Ingredients", etc.
+  eventType      String?    // "Wedding", "Corporate", etc.
+  quantity       String     // "50 plates", "30 kg"
+  mealCount      Int
+  isVeg          Boolean
+  cookedTime     DateTime?
+  expiryWindow   DateTime?  // When the food expires
+  storageType    String?    // "Room Temp", "Refrigerated", etc.
+  
+  // Location
+  latitude       Float?
+  longitude      Float?
+  address        String?
+  
+  // AI Freshness
+  imageUrl       String?
+  freshnessScore Float?     // 0-100
+  riskLevel      String?    // "Low", "Medium", "High"
+  shelfLifeHours Float?
+  
+  // Status tracking
+  status         DonationStatus @default(AVAILABLE)
+  
+  // Environmental impact
+  foodWeightLbs  Float?     // Weight in pounds
+  mealsRescued   Int?       // = foodWeightLbs / 1.2
+  co2Prevented   Float?     // = foodWeightLbs * 3.66
+  
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  
+  claims         Claim[]
+  auditLogs      AuditLog[]
+}
+
+enum DonationStatus {
+  AVAILABLE
+  CLAIMED
+  PICKED_UP
+  DELIVERED
+  EXPIRED
+}
+
+model Claim {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  donationId   String    @db.ObjectId
+  donation     Donation  @relation(fields: [donationId], references: [id])
+  ngoId        String    @db.ObjectId
+  ngo          User      @relation("NgoClaims", fields: [ngoId], references: [id])
+  volunteerId  String?   @db.ObjectId
+  volunteer    User?     @relation("VolunteerDeliveries", fields: [volunteerId], references: [id])
+  
+  status       ClaimStatus @default(PENDING)
+  
+  claimedAt    DateTime  @default(now())
+  pickedUpAt   DateTime?
+  deliveredAt  DateTime?
+  
+  // Delivery proof
+  pickupPhoto  String?
+  deliveryPhoto String?
+  qrConfirmed  Boolean   @default(false)
+  
+  auditLogs    AuditLog[]
+}
+
+enum ClaimStatus {
+  PENDING
+  ACCEPTED
+  PICKED_UP
+  DELIVERED
+  REJECTED
+}
+
+model AuditLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  donationId  String?  @db.ObjectId
+  donation    Donation? @relation(fields: [donationId], references: [id])
+  claimId     String?  @db.ObjectId
+  claim       Claim?   @relation(fields: [claimId], references: [id])
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  
+  action      String   // "CREATED", "CLAIMED", "PICKED_UP", "DELIVERED", etc.
+  fromStatus  String?
+  toStatus    String?
+  metadata    Json?    // Additional context
+  
+  timestamp   DateTime @default(now())
+}
