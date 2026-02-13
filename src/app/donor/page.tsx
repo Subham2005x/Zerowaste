@@ -18,6 +18,7 @@ import {
     Package,
     PartyPopper,
     Linkedin,
+    Trash2,
 } from "lucide-react";
 import DashboardLayout from "@/components/ui/DashboardLayout";
 import StatCard from "@/components/ui/StatCard";
@@ -25,6 +26,10 @@ import GlassCard from "@/components/ui/GlassCard";
 import FreshnessBar from "@/components/ui/FreshnessBar";
 import PageTransition from "@/components/ui/PageTransition";
 import { donorStats, nearbyNGOs, donationHistory } from "@/lib/mock-data";
+
+// Custom font styles
+const serifFont = { fontFamily: '"Cormorant Garamond", serif' };
+const sansFont = { fontFamily: '"Space Grotesk", sans-serif' };
 
 const steps = [
     { id: 1, label: "Post Surplus", icon: Gift },
@@ -81,349 +86,387 @@ export default function DonorDashboard() {
     return (
         <DashboardLayout title="Donor Dashboard">
             <PageTransition>
-                {/* Stats Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <StatCard icon={<Gift size={18} className="text-[var(--color-green-bright)]" />} label="Total Donations" value={donorStats.totalDonations} change={donorStats.totalDonationsChange} delay={0} />
-                    <StatCard icon={<CheckCircle2 size={18} className="text-[var(--color-green-bright)]" />} label="Meals Rescued" value={donorStats.mealsRescued.toLocaleString()} change={donorStats.mealsRescuedChange} delay={0.05} />
-                    <StatCard icon={<Clock size={18} className="text-[var(--color-green-bright)]" />} label="Avg Freshness Score" value={`${donorStats.avgFreshness}%`} delay={0.1} />
-                    <StatCard icon={<Building2 size={18} className="text-[var(--color-green-bright)]" />} label="NGOs Served" value={donorStats.ngosServed} change={donorStats.ngosServedChange} delay={0.15} />
+                {/* HEADLINE & STATS (BROKEN GRID ROW 1) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 items-end">
+                    {/* Welcome & Context (Left 7 cols) */}
+                    <div className="lg:col-span-7">
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-5xl md:text-6xl text-white font-light tracking-tight leading-[0.9] mb-4"
+                            style={serifFont}
+                        >
+                            Orchestrating <br /> <span className="italic text-[var(--color-text-paragraph)]">abundance.</span>
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-[var(--color-text-secondary)] max-w-md"
+                            style={sansFont}
+                        >
+                            Bridge the gap between surplus and sustenance. Your contributions are reshaping food security.
+                        </motion.p>
+                    </div>
+
+                    {/* Primary Stats (Right 5 cols) */}
+                    <div className="lg:col-span-5 flex justify-end gap-6">
+                        <StatCard
+                            icon={<Gift size={24} className="text-white" />}
+                            label="Total Donations"
+                            value={donorStats.totalDonations}
+                            change={donorStats.totalDonationsChange}
+                            iconBg="var(--color-green-primary)"
+                            delay={0.1}
+                        />
+                        <StatCard
+                            icon={<Building2 size={24} className="text-white" />}
+                            label="NGOs Served"
+                            value={donorStats.ngosServed}
+                            change={donorStats.ngosServedChange}
+                            iconBg="#0077b5" // LinkedIn Blue for professional connection feel, or use theme var
+                            delay={0.2}
+                        />
+                    </div>
                 </div>
 
-                {/* Step Indicator */}
-                <GlassCard className="p-4 mb-6" delay={0.2}>
-                    <div className="flex items-center justify-between">
+                {/* MAIN CONTENT (BROKEN GRID ROW 2) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                    {/* LEFT: STEP INDICATOR (2 cols) - Vertical on Desktop */}
+                    <div className="lg:col-span-2 hidden lg:flex flex-col gap-6 pt-8">
                         {steps.map((step, i) => (
-                            <div key={step.id} className="flex items-center flex-1">
-                                <button onClick={() => goToStep(step.id)} className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${currentStep === step.id ? "bg-[var(--color-green-primary)] text-white shadow-lg shadow-[rgba(27,67,50,0.3)]"
-                                        : currentStep > step.id ? "text-[var(--color-green-bright)] bg-[rgba(27,67,50,0.15)]"
-                                            : "text-[var(--color-text-muted)]"
-                                    }`}>
-                                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${currentStep > step.id ? "bg-[var(--color-green-bright)] text-black" : currentStep === step.id ? "bg-white/20 text-white" : "bg-[rgba(255,255,255,0.05)] text-[var(--color-text-muted)]"
-                                        }`}>{currentStep > step.id ? <CheckCircle2 size={14} /> : step.id}</div>
-                                    <span className="text-xs font-medium hidden lg:inline">{step.label}</span>
-                                </button>
-                                {i < steps.length - 1 && <div className={`flex-1 h-[2px] mx-2 rounded-full transition-colors duration-500 ${currentStep > step.id ? "bg-[var(--color-green-bright)]" : "bg-[rgba(255,255,255,0.08)]"}`} />}
-                            </div>
+                            <button
+                                key={step.id}
+                                onClick={() => goToStep(step.id)}
+                                className={`group flex items-center gap-3 text-left transition-all duration-300 ${currentStep === step.id ? "opacity-100 translate-x-2" : "opacity-30 hover:opacity-60"}`}
+                            >
+                                <span className="text-xs font-bold font-mono text-[var(--color-green-bright)]">0{step.id}</span>
+                                <span className={`text-sm ${currentStep === step.id ? "text-white font-medium" : "text-[var(--color-text-muted)]"}`} style={sansFont}>{step.label}</span>
+                                {currentStep === step.id && <div className="w-1 h-1 rounded-full bg-[var(--color-green-bright)] shadow-[0_0_8px_var(--color-green-bright)]" />}
+                            </button>
                         ))}
                     </div>
-                </GlassCard>
 
-                {/* Step Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2">
+                    {/* MOBILE STEP INDICATOR */}
+                    <div className="lg:hidden col-span-12 mb-4 overflow-x-auto pb-2 flex gap-4">
+                        {steps.map((step) => (
+                            <button
+                                key={step.id}
+                                onClick={() => goToStep(step.id)}
+                                className={`flex-shrink-0 px-4 py-2 rounded-full border text-xs whitespace-nowrap transition-colors ${currentStep === step.id
+                                    ? "bg-white/10 border-white/20 text-white"
+                                    : "border-transparent text-[var(--color-text-muted)]"
+                                    }`}
+                                style={sansFont}
+                            >
+                                {step.id}. {step.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* CENTER: ACTIVE STEP FORM (7 cols) */}
+                    <div className="lg:col-span-7 min-h-[500px]">
                         <AnimatePresence mode="wait" custom={direction}>
-                            <motion.div key={currentStep} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}>
+                            <motion.div
+                                key={currentStep}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                                className="h-full"
+                            >
+                                <GlassCard className="p-8 h-full border border-white/5 bg-black/20" hover={false}>
 
-                                {/* STEP 1: POST SURPLUS */}
-                                {currentStep === 1 && (
-                                    <GlassCard className="p-6">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center"><Gift size={20} className="text-white" /></div>
-                                            <div>
-                                                <h2 className="text-xl font-bold text-white">Create Surplus Listing</h2>
-                                                <p className="text-sm text-[var(--color-text-muted)]">Post your surplus food details</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Event Type</label>
-                                                <select className="select-field">
-                                                    <option>Select event type</option>
-                                                    <option>Wedding</option>
-                                                    <option>Political Rally</option>
-                                                    <option>Party</option>
-                                                    <option>Corporate Event</option>
-                                                    <option>Restaurant Surplus</option>
-                                                    <option>Household</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Approx. Meals Available</label>
-                                                <input type="number" className="input-field" placeholder="e.g. 150" defaultValue={150} />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Cooked At</label>
-                                                <div className="flex items-center gap-2">
-                                                    <input type="time" className="input-field" defaultValue="18:30" />
-                                                    <Clock size={16} className="text-[var(--color-text-muted)] shrink-0" />
+                                    {/* STEP 1: POST SURPLUS */}
+                                    {currentStep === 1 && (
+                                        <div className="space-y-6">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h2 className="text-3xl text-white font-light tracking-wide mb-2" style={serifFont}>Detail the surplus.</h2>
+                                                    <p className="text-sm text-[var(--color-text-muted)]" style={sansFont}>Provide accurate information to ensure safe distribution.</p>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
+                                                    <Gift size={20} className="text-[var(--color-green-bright)]" />
                                                 </div>
                                             </div>
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Safe Until (Expiry Window)</label>
-                                                <div className="flex items-center gap-2">
-                                                    <input type="time" className="input-field" defaultValue="23:30" />
-                                                    <Clock size={16} className="text-[var(--color-text-muted)] shrink-0" />
+
+                                            {/* Primary Info */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={sansFont}>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Food Item Name</label>
+                                                    <input type="text" className="bg-transparent border-b border-white/10 w-full py-2 text-white placeholder-white/20 focus:outline-none focus:border-[var(--color-green-bright)] transition-colors" placeholder="e.g. Veg Biryani, Assorted Pastries" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Food Category</label>
+                                                    <select className="bg-transparent border-b border-white/10 w-full py-2 text-white focus:outline-none focus:border-[var(--color-green-bright)] transition-colors [&>option]:bg-black">
+                                                        <option>Cooked Meal</option>
+                                                        <option>Raw Ingredients</option>
+                                                        <option>Packaged Food</option>
+                                                        <option>Bakery Items</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Pickup Time Window</label>
-                                                <input type="text" className="input-field" placeholder="e.g. 7 PM – 9 PM" defaultValue="7:00 PM – 9:00 PM" />
-                                            </div>
-                                            <div>
-                                                <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Location</label>
-                                                <div className="relative">
-                                                    <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-                                                    <input type="text" className="input-field pl-10" placeholder="Auto-detect or enter" defaultValue="Grand Hyatt, Mumbai" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Veg Toggle */}
-                                        <div className="flex items-center gap-3 mb-5">
-                                            <button onClick={() => setIsVeg(!isVeg)} className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${isVeg ? "bg-[var(--color-green-accent)]" : "bg-[rgba(255,255,255,0.2)]"}`}>
-                                                <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform duration-300 ${isVeg ? "translate-x-6" : "translate-x-0.5"}`} />
-                                            </button>
-                                            <span className="text-sm flex items-center gap-1.5">
-                                                <span className={`w-2.5 h-2.5 rounded-full ${isVeg ? "bg-green-500" : "bg-red-500"}`} />
-                                                {isVeg ? "Vegetarian" : "Non-Vegetarian"}
-                                            </span>
-                                        </div>
-
-                                        {/* Upload */}
-                                        <div className="mb-4">
-                                            <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Upload Food Images</label>
-                                            <div onClick={handleImageUpload} className="border-2 border-dashed border-[rgba(255,255,255,0.1)] rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-[var(--color-green-accent)] transition-colors">
-                                                <Camera size={28} className="text-[var(--color-text-muted)] mb-2" />
-                                                <span className="text-sm text-[var(--color-text-muted)]">Click to upload food photo</span>
-                                            </div>
-                                        </div>
-
-                                        {/* AI Freshness Scan */}
-                                        <AnimatePresence>
-                                            {showScan && (
-                                                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mb-5 overflow-hidden">
-                                                    <div className="glass-card p-4 relative overflow-hidden">
-                                                        <div className="flex items-center gap-2 mb-3">
-                                                            <Sparkles size={16} className="text-[var(--color-green-bright)]" />
-                                                            <span className="text-sm font-medium text-white">AI Freshness Scan</span>
-                                                        </div>
-                                                        {!scanComplete && (
-                                                            <div className="relative h-3 bg-[rgba(255,255,255,0.05)] rounded-full overflow-hidden mb-2">
-                                                                <motion.div className="absolute top-0 left-0 h-full bg-gradient-to-r from-transparent via-[var(--color-green-bright)] to-transparent" style={{ width: "30%" }} animate={{ x: ["-100%", "400%"] }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-                                                            </div>
-                                                        )}
-                                                        {scanComplete && (
-                                                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                                                                <div className="flex items-center justify-between mb-2">
-                                                                    <span className="text-sm text-[var(--color-text-secondary)]">Freshness: 98%</span>
-                                                                    <span className="badge badge-fresh">Risk: Low</span>
-                                                                </div>
-                                                                <FreshnessBar value={98} />
-                                                                <p className="text-xs text-[var(--color-text-secondary)] mt-2">Estimated shelf life: ~5 hours remaining</p>
-                                                            </motion.div>
-                                                        )}
+                                            {/* Secondary Info */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={sansFont}>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Quantity</label>
+                                                    <div className="flex gap-4">
+                                                        <input type="number" className="bg-transparent border-b border-white/10 w-full py-2 text-white placeholder-white/20 focus:outline-none focus:border-[var(--color-green-bright)] transition-colors" placeholder="100" />
+                                                        <select className="bg-transparent border-b border-white/10 w-1/3 py-2 text-white focus:outline-none focus:border-[var(--color-green-bright)] transition-colors [&>option]:bg-black">
+                                                            <option>Plates</option>
+                                                            <option>Kg</option>
+                                                            <option>Liters</option>
+                                                            <option>Servings</option>
+                                                        </select>
                                                     </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Dietary Type</label>
+                                                    <div className="flex gap-4 pt-2">
+                                                        <label className="flex items-center gap-2 cursor-pointer group">
+                                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${isVeg ? "border-[var(--color-green-bright)]" : "border-white/30"}`}>
+                                                                {isVeg && <div className="w-2 h-2 rounded-full bg-[var(--color-green-bright)]" />}
+                                                            </div>
+                                                            <input type="radio" name="diet" className="hidden" checked={isVeg} onChange={() => setIsVeg(true)} />
+                                                            <span className={`text-sm ${isVeg ? "text-white" : "text-[var(--color-text-muted)] group-hover:text-white"}`}>Veg</span>
+                                                        </label>
+                                                        <label className="flex items-center gap-2 cursor-pointer group">
+                                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${!isVeg ? "border-[var(--color-urgent-red)]" : "border-white/30"}`}>
+                                                                {!isVeg && <div className="w-2 h-2 rounded-full bg-[var(--color-urgent-red)]" />}
+                                                            </div>
+                                                            <input type="radio" name="diet" className="hidden" checked={!isVeg} onChange={() => setIsVeg(false)} />
+                                                            <span className={`text-sm ${!isVeg ? "text-white" : "text-[var(--color-text-muted)] group-hover:text-white"}`}>Non-Veg</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Timing & Conditions */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={sansFont}>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Pickup Window</label>
+                                                    <input type="text" className="bg-transparent border-b border-white/10 w-full py-2 text-white placeholder-white/20 focus:outline-none focus:border-[var(--color-green-bright)] transition-colors" placeholder="e.g. 2:00 PM - 5:00 PM" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">Storage Condition</label>
+                                                    <select className="bg-transparent border-b border-white/10 w-full py-2 text-white focus:outline-none focus:border-[var(--color-green-bright)] transition-colors [&>option]:bg-black">
+                                                        <option>Room Temperature</option>
+                                                        <option>Refrigerated</option>
+                                                        <option>Frozen</option>
+                                                        <option>Hot Hold</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {/* Minimalist Image Upload */}
+                                            <div onClick={handleImageUpload} className="group relative h-32 rounded-xl border border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors flex flex-col items-center justify-center cursor-pointer overflow-hidden mt-4">
+                                                <Camera size={20} className="text-[var(--color-text-muted)] mb-2 group-hover:text-white transition-colors" />
+                                                <span className="text-xs text-[var(--color-text-muted)] group-hover:text-white transition-colors" style={sansFont}>Upload or Scan Food</span>
+
+                                                {/* Scan Animation */}
+                                                <AnimatePresence>
+                                                    {showScan && !scanComplete && (
+                                                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10">
+                                                            <div className="w-full h-1 bg-[var(--color-green-bright)] absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
+                                                            <span className="text-xs text-[var(--color-green-bright)] animate-pulse font-mono">ANALYZING FRESHNESS...</span>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                                {scanComplete && (
+                                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 p-6 text-center">
+                                                        <Sparkles size={20} className="text-[var(--color-green-bright)] mb-2" />
+                                                        <p className="text-white text-sm font-light mb-1" style={serifFont}>Verified</p>
+                                                        <FreshnessBar value={98} size="sm" />
+                                                    </motion.div>
+                                                )}
+                                            </div>
+
+                                            <button onClick={handleSubmitDonation} className="w-full py-4 rounded-xl bg-[var(--color-green-primary)] hover:bg-[var(--color-green-accent)] text-white text-sm tracking-widest uppercase transition-all hover:scale-[1.01]" style={sansFont}>
+                                                Publish Listing
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* STEP 2: WAIT FOR CLAIM */}
+                                    {currentStep === 2 && (
+                                        <div className="space-y-8">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h2 className="text-3xl text-white font-light tracking-wide mb-2" style={serifFont}>Awaiting claimant.</h2>
+                                                    <p className="text-sm text-[var(--color-text-muted)]" style={sansFont}>Your donation is visible to verified NGOs.</p>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center animate-pulse">
+                                                    <Eye size={20} className="text-[var(--color-warning-amber)]" />
+                                                </div>
+                                            </div>
+
+                                            {/* Status Card */}
+                                            <div className="p-6 rounded-xl bg-white/[0.03] border border-[var(--color-warning-amber)]/30 backdrop-blur-md relative overflow-hidden">
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-warning-amber)]" />
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <span className="text-lg text-white font-light" style={serifFont}>Veg Biryani - 150 meals</span>
+                                                    <span className="px-3 py-1 rounded-full border border-[var(--color-warning-amber)]/50 text-[var(--color-warning-amber)] text-[10px] uppercase tracking-widest bg-[var(--color-warning-amber)]/10">Active</span>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4 text-xs text-[var(--color-text-secondary)]" style={sansFont}>
+                                                    <span className="flex items-center gap-2"><Clock size={12} /> Expires in 4h</span>
+                                                    <span className="flex items-center gap-2"><MapPin size={12} /> Grand Hyatt</span>
+                                                </div>
+                                            </div>
+
+                                            {!claimed ? (
+                                                <button onClick={handleClaimAccepted} className="w-full py-4 rounded-xl border border-dashed border-[var(--color-green-primary)] text-[var(--color-green-bright)] hover:bg-[var(--color-green-primary)]/10 transition-all flex items-center justify-center gap-2" style={sansFont}>
+                                                    <Bell size={16} className="animate-bounce" /> Simulate Claim Request
+                                                </button>
+                                            ) : (
+                                                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="p-6 rounded-xl bg-[var(--color-green-primary)]/20 border border-[var(--color-green-bright)] text-center">
+                                                    <CheckCircle2 size={32} className="text-[var(--color-green-bright)] mx-auto mb-3" />
+                                                    <p className="text-white text-lg font-light" style={serifFont}>Claim Accepted</p>
+                                                    <p className="text-[var(--color-text-secondary)] text-xs mt-1" style={sansFont}>Akshaya Patra Foundation is on the way.</p>
                                                 </motion.div>
                                             )}
-                                        </AnimatePresence>
-
-                                        {/* Safety Checklist */}
-                                        <div className="glass-card p-4 mb-5">
-                                            <p className="text-sm font-medium text-white mb-3">Safety Checklist</p>
-                                            {["Food has been stored at proper temperature", "Food is free from contamination", "Packaging is clean and hygienic", "Allergen information is accurate"].map((item, i) => (
-                                                <label key={i} className="flex items-center gap-2.5 py-1.5 cursor-pointer">
-                                                    <input type="checkbox" defaultChecked className="w-4 h-4 rounded accent-[var(--color-green-accent)]" />
-                                                    <span className="text-sm text-[var(--color-text-secondary)]">{item}</span>
-                                                </label>
-                                            ))}
                                         </div>
+                                    )}
 
-                                        <button onClick={handleSubmitDonation} className="btn-primary w-full py-3 text-base font-semibold flex items-center justify-center gap-2">
-                                            🚀 Post Surplus Food
-                                        </button>
-                                        {donationSubmitted && <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center text-sm text-[var(--color-green-bright)] mt-3">✅ Donation submitted! Status: Available</motion.p>}
-                                    </GlassCard>
-                                )}
-
-                                {/* STEP 2: WAIT FOR CLAIM */}
-                                {currentStep === 2 && (
-                                    <GlassCard className="p-6">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <div className="w-10 h-10 rounded-xl bg-[rgba(245,158,11,0.2)] flex items-center justify-center"><Eye size={20} className="text-[var(--color-warning-amber)]" /></div>
+                                    {/* STEP 3: HANDOVER */}
+                                    {currentStep === 3 && (
+                                        <div className="space-y-8">
                                             <div>
-                                                <h2 className="text-xl font-bold text-white">Waiting for Claim</h2>
-                                                <p className="text-sm text-[var(--color-text-muted)]">Your listing is live — NGOs can see it</p>
+                                                <h2 className="text-3xl text-white font-light tracking-wide mb-2" style={serifFont}>Transfer responsibility.</h2>
+                                                <p className="text-sm text-[var(--color-text-muted)]" style={sansFont}>Ensure secure handover to the volunteer.</p>
                                             </div>
-                                        </div>
 
-                                        <div className="glass-card p-4 mb-5 border-l-4 border-l-[var(--color-warning-amber)]">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-base font-semibold text-white">Veg Biryani — 150 meals</span>
-                                                <span className="badge badge-pending">⏳ Available</span>
-                                            </div>
-                                            <div className="flex items-center gap-4 text-xs text-[var(--color-text-muted)]">
-                                                <span className="flex items-center gap-1"><MapPin size={12} /> Grand Hyatt, Mumbai</span>
-                                                <span className="flex items-center gap-1"><Clock size={12} /> Pickup: 7 PM – 9 PM</span>
-                                            </div>
-                                        </div>
-
-                                        <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2"><Bell size={14} className="text-[var(--color-green-bright)]" /> Nearby NGOs</h3>
-                                        <div className="space-y-3 mb-5">
-                                            {nearbyNGOs.map((ngo, i) => (
-                                                <motion.div key={ngo.name} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
-                                                    className="p-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[var(--color-border-glass)] flex items-center justify-between">
-                                                    <div>
-                                                        <p className="text-sm font-medium text-white">{ngo.name}</p>
-                                                        <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)] mt-0.5">
-                                                            <span className="flex items-center gap-1"><MapPin size={11} /> {ngo.distance}</span>
-                                                            <span>Capacity: {ngo.capacity}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-2 h-2 rounded-full bg-[var(--color-green-bright)] animate-pulse" />
-                                                </motion.div>
-                                            ))}
-                                        </div>
-
-                                        {!claimed && (
-                                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                                className="glass-card p-4 border border-[var(--color-green-accent)] mb-5">
-                                                <div className="flex items-center gap-3 mb-3">
-                                                    <div className="w-8 h-8 rounded-full bg-[var(--color-green-primary)] flex items-center justify-center animate-pulse"><Bell size={16} className="text-[var(--color-green-bright)]" /></div>
-                                                    <div>
-                                                        <p className="text-sm font-medium text-white">🎉 Claim Notification!</p>
-                                                        <p className="text-xs text-[var(--color-text-muted)]">Akshaya Patra Foundation wants to claim your food</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 mb-2 text-xs text-[var(--color-text-secondary)]">
-                                                    <span>📞 +91 98765 00001</span>
-                                                    <span>📧 contact@akshayapatra.org</span>
-                                                </div>
-                                                <button onClick={handleClaimAccepted} className="btn-accept w-full py-2 mt-2 flex items-center justify-center gap-2">✅ Accept Claim <ArrowRight size={14} /></button>
-                                            </motion.div>
-                                        )}
-
-                                        {claimed && (
-                                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center p-4 glass-card border border-[var(--color-green-accent)]">
-                                                <CheckCircle2 size={32} className="text-[var(--color-green-bright)] mx-auto mb-2" />
-                                                <p className="text-sm font-medium text-white">Claim Accepted!</p>
-                                                <p className="text-xs text-[var(--color-text-muted)]">Status → Claimed • NGO contact details shared</p>
-                                            </motion.div>
-                                        )}
-
-                                        <div className="flex gap-3 mt-5">
-                                            <button onClick={prevStep} className="btn-reject flex-1 py-3 flex items-center justify-center gap-2"><ArrowLeft size={16} /> Back</button>
-                                        </div>
-                                    </GlassCard>
-                                )}
-
-                                {/* STEP 3: HANDOVER */}
-                                {currentStep === 3 && (
-                                    <GlassCard className="p-6">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <div className="w-10 h-10 rounded-xl bg-[rgba(59,130,246,0.2)] flex items-center justify-center"><Package size={20} className="text-blue-400" /></div>
-                                            <div>
-                                                <h2 className="text-xl font-bold text-white">Handover</h2>
-                                                <p className="text-sm text-[var(--color-text-muted)]">Volunteer or NGO will arrive for pickup</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="glass-card p-4 mb-5">
-                                            <h3 className="text-sm font-semibold text-white mb-3">Pickup Details</h3>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex justify-between"><span className="text-[var(--color-text-muted)]">Food</span><span className="text-white">Veg Biryani — 150 meals</span></div>
-                                                <div className="flex justify-between"><span className="text-[var(--color-text-muted)]">NGO</span><span className="text-white">Akshaya Patra Foundation</span></div>
-                                                <div className="flex justify-between"><span className="text-[var(--color-text-muted)]">Volunteer</span><span className="text-white">Rahul Sharma</span></div>
-                                                <div className="flex justify-between"><span className="text-[var(--color-text-muted)]">ETA</span><span className="text-[var(--color-green-bright)]">~15 minutes</span></div>
-                                            </div>
-                                        </div>
-
-                                        <div className="mb-6">
-                                            <h3 className="text-sm font-semibold text-white mb-3">Status Timeline</h3>
-                                            <div className="space-y-3 pl-4 border-l-2 border-[var(--color-green-accent)]">
+                                            <div className="relative pl-6 space-y-8 border-l border-white/10" style={sansFont}>
                                                 {[
-                                                    { label: "Donation Posted", time: "6:30 PM", done: true },
-                                                    { label: "Claimed by Akshaya Patra", time: "6:45 PM", done: true },
-                                                    { label: "Volunteer Assigned — Rahul", time: "6:50 PM", done: true },
-                                                    { label: "Volunteer En Route", time: "6:55 PM", done: true },
-                                                    { label: "Waiting for Pickup", time: "Now", done: false },
+                                                    { title: "Donation Verified", time: "18:30", active: true },
+                                                    { title: "Claimed by NGO", time: "18:45", active: true },
+                                                    { title: "Volunteer Arrived", time: "Now", active: true, pulse: true },
+                                                    { title: "Handover Complete", time: "Pending", active: false }
                                                 ].map((item, i) => (
-                                                    <div key={i} className="flex items-center gap-3 relative">
-                                                        <div className={`absolute -left-[21px] w-3 h-3 rounded-full ${item.done ? "bg-[var(--color-green-bright)]" : "bg-[var(--color-text-muted)] animate-pulse"}`} />
-                                                        <div className="flex-1"><span className={`text-sm ${item.done ? "text-white" : "text-[var(--color-warning-amber)]"}`}>{item.label}</span></div>
-                                                        <span className="text-xs text-[var(--color-text-muted)]">{item.time}</span>
+                                                    <div key={i} className="relative">
+                                                        <div className={`absolute -left-[29px] w-3 h-3 rounded-full border-2 border-[var(--color-bg-primary)] ${item.active ? "bg-[var(--color-green-bright)]" : "bg-[var(--color-text-muted)]"} ${item.pulse ? "animate-pulse" : ""}`} />
+                                                        <p className={`text-sm ${item.active ? "text-white" : "text-[var(--color-text-muted)]"}`}>{item.title}</p>
+                                                        <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">{item.time}</p>
                                                     </div>
                                                 ))}
                                             </div>
+
+                                            {!pickedUp ? (
+                                                <button onClick={handlePickUp} className="w-full py-4 rounded-xl bg-white text-black hover:bg-white/90 font-medium transition-all" style={sansFont}>
+                                                    Confirm Handover
+                                                </button>
+                                            ) : (
+                                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
+                                                    <p className="text-2xl text-[var(--color-green-bright)] font-light italic" style={serifFont}>"Generosity is the most natural outward expression of an inner attitude of compassion."</p>
+                                                </motion.div>
+                                            )}
                                         </div>
+                                    )}
 
-                                        {!pickedUp ? (
-                                            <button onClick={handlePickUp} className="btn-primary w-full py-3 text-base font-semibold flex items-center justify-center gap-2"><CheckCircle2 size={18} /> Mark as Picked Up</button>
-                                        ) : (
-                                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center p-4 glass-card border border-[var(--color-green-accent)]">
-                                                <CheckCircle2 size={32} className="text-[var(--color-green-bright)] mx-auto mb-2" />
-                                                <p className="text-sm font-medium text-white">Picked Up Successfully!</p>
-                                                <p className="text-xs text-[var(--color-text-muted)]">Status → Delivered</p>
+                                    {/* STEP 4: IMPACT */}
+                                    {currentStep === 4 && (
+                                        <div className="flex flex-col items-center justify-center h-full text-center space-y-8">
+                                            <motion.div
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1 }}
+                                                transition={{ type: "spring", stiffness: 100 }}
+                                                className="w-24 h-24 rounded-full bg-gradient-to-tr from-[var(--color-green-primary)] to-[var(--color-green-bright)] flex items-center justify-center shadow-[0_0_30px_rgba(82,183,136,0.3)]"
+                                            >
+                                                <Leaf size={40} className="text-white" />
                                             </motion.div>
-                                        )}
-                                        <div className="flex gap-3 mt-4"><button onClick={prevStep} className="btn-reject flex-1 py-2.5 flex items-center justify-center gap-2"><ArrowLeft size={16} /> Back</button></div>
-                                    </GlassCard>
-                                )}
 
-                                {/* STEP 4: IMPACT SCREEN */}
-                                {currentStep === 4 && (
-                                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
-                                        <GlassCard className="p-10 text-center glow-green">
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                                                className="w-24 h-24 rounded-full gradient-bg glow-green flex items-center justify-center mx-auto mb-6">
-                                                <Leaf size={44} className="text-white" />
-                                            </motion.div>
-                                            <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                                className="text-4xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-cal)" }}>
-                                                🎉 You donated 150 meals!
-                                            </motion.h2>
-                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-[var(--color-text-secondary)] text-lg mb-8">
-                                                Your generosity is making a real difference!
-                                            </motion.p>
-                                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="grid grid-cols-3 gap-4 mb-8">
-                                                <div className="glass-card p-5"><p className="text-3xl font-bold gradient-text mb-1">150</p><p className="text-xs text-[var(--color-text-muted)]">Meals Rescued</p></div>
-                                                <div className="glass-card p-5"><p className="text-3xl font-bold gradient-text mb-1">659</p><p className="text-xs text-[var(--color-text-muted)]">lbs CO₂ Saved</p></div>
-                                                <div className="glass-card p-5"><p className="text-3xl font-bold gradient-text mb-1">~50</p><p className="text-xs text-[var(--color-text-muted)]">Families Helped</p></div>
-                                            </motion.div>
-                                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="flex gap-3 justify-center">
-                                                <button className="btn-primary py-3 px-6 flex items-center gap-2 text-base"><Linkedin size={18} /> Share to LinkedIn</button>
-                                                <button onClick={() => goToStep(1)} className="btn-reject py-3 px-6 flex items-center gap-2 text-base">Donate Again</button>
-                                            </motion.div>
-                                        </GlassCard>
-                                    </motion.div>
-                                )}
+                                            <div>
+                                                <h1 className="text-5xl md:text-6xl text-white font-light mb-4" style={serifFont}>Impact realized.</h1>
+                                                <p className="text-lg text-[var(--color-text-secondary)]" style={sansFont}>150 meals have been diverted from waste to plates.</p>
+                                            </div>
+
+                                            <div className="grid grid-cols-3 gap-6 w-full max-w-lg">
+                                                {[
+                                                    { value: "150", label: "Meals" },
+                                                    { value: "65kg", label: "CO₂ Saved" },
+                                                    { value: "50+", label: "People Fed" }
+                                                ].map((stat, i) => (
+                                                    <div key={i} className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
+                                                        <p className="text-2xl text-white font-light" style={sansFont}>{stat.value}</p>
+                                                        <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-widest">{stat.label}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="flex gap-4">
+                                                <button onClick={() => goToStep(1)} className="px-8 py-3 rounded-full border border-white/20 text-white hover:bg-white/5 transition-all text-sm uppercase tracking-widest" style={sansFont}>
+                                                    Donate Again
+                                                </button>
+                                                <button className="px-8 py-3 rounded-full bg-[#0077b5] text-white hover:bg-[#0077b5]/90 transition-all text-sm uppercase tracking-widest flex items-center gap-2" style={sansFont}>
+                                                    <Linkedin size={16} /> Share
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                </GlassCard>
                             </motion.div>
                         </AnimatePresence>
                     </div>
 
-                    {/* RIGHT SIDEBAR */}
-                    <div className="space-y-6">
-                        <GlassCard className="p-5" delay={0.25}>
-                            <h3 className="text-base font-semibold text-white mb-4">Nearby NGOs</h3>
-                            <div className="space-y-3">
-                                {nearbyNGOs.map((ngo) => (
-                                    <div key={ngo.name} className="p-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[var(--color-border-glass)] hover:border-[rgba(255,255,255,0.12)] transition-colors">
-                                        <p className="text-sm font-medium text-white mb-1">{ngo.name}</p>
-                                        <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)]">
-                                            <span className="flex items-center gap-1"><MapPin size={12} /> {ngo.distance}</span>
-                                            <span>Capacity: {ngo.capacity}</span>
+                    {/* RIGHT: CONTEXT (3 cols) */}
+                    <div className="lg:col-span-3 space-y-6">
+
+                        {/* Nearby NGOs - RESTORED FEATURE */}
+                        <GlassCard className="p-6 bg-white/[0.02]" delay={0.3}>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg text-white font-light" style={serifFont}>Nearby NGOs</h3>
+                                <button className="text-xs text-[var(--color-green-bright)] hover:underline" style={sansFont}>View Map</button>
+                            </div>
+                            <div className="space-y-4">
+                                {nearbyNGOs.map((ngo, i) => (
+                                    <div key={i} className="pb-3 border-b border-white/5 last:border-0 last:pb-0 group cursor-pointer">
+                                        <div className="flex justify-between items-start mb-1">
+                                            <p className="text-sm text-white group-hover:text-[var(--color-green-bright)] transition-colors" style={sansFont}>{ngo.name}</p>
+                                            <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-[var(--color-text-secondary)]">{ngo.distance}</span>
                                         </div>
-                                        <p className="text-xs text-[var(--color-text-muted)] mt-1">Needs: {ngo.needs}</p>
+                                        <p className="text-xs text-[var(--color-text-muted)] mt-1" style={sansFont}>Needs: {ngo.needs}</p>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                                <div className={`h-full ${ngo.capacity === "High" ? "bg-[var(--color-green-bright)] w-3/4" : ngo.capacity === "Medium" ? "bg-[var(--color-warning-amber)] w-1/2" : "bg-[var(--color-urgent-red)] w-1/4"}`} />
+                                            </div>
+                                            <span className="text-[10px] text-[var(--color-text-muted)]">{ngo.capacity} Cap</span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </GlassCard>
-                        <GlassCard className="p-5" delay={0.3}>
-                            <h3 className="text-base font-semibold text-white mb-4">Recent Donations</h3>
-                            <div className="space-y-3">
-                                {donationHistory.slice(0, 3).map((d) => (
-                                    <div key={d.id} className="flex items-center justify-between p-2.5 rounded-lg bg-[rgba(255,255,255,0.02)]">
-                                        <div><p className="text-sm text-white">{d.foodItem}</p><p className="text-xs text-[var(--color-text-muted)]">{d.date}</p></div>
-                                        <span className={`badge ${d.status === "Delivered" ? "badge-fresh" : "badge-urgent"}`}>{d.status}</span>
+
+                        {/* Recent Activity - EXPANDED */}
+                        <GlassCard className="p-6 bg-white/[0.02]" delay={0.4}>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg text-white font-light" style={serifFont}>Recent Activity</h3>
+                                <button className="text-xs text-[var(--color-green-bright)] hover:underline" style={sansFont}>History</button>
+                            </div>
+                            <div className="space-y-4">
+                                {donationHistory.map((d, i) => (
+                                    <div key={i} className="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0">
+                                        <div>
+                                            <p className="text-sm text-white" style={sansFont}>{d.foodItem}</p>
+                                            <p className="text-xs text-[var(--color-text-muted)]" style={sansFont}>To: {d.ngo} • {d.date}</p>
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <span className={`w-2 h-2 rounded-full mb-1 ${d.status === "Delivered" ? "bg-[var(--color-green-bright)]" : d.status === "Expired" ? "bg-[var(--color-urgent-red)]" : "bg-[var(--color-warning-amber)]"}`} />
+                                            <span className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wide">{d.status}</span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
+                        </GlassCard>
+
+                        <GlassCard className="p-6 bg-gradient-to-br from-[var(--color-editorial-green)] to-[var(--color-bg-primary)] border-none" delay={0.5}>
+                            <h3 className="text-lg text-white font-light mb-2" style={serifFont}>Did you know?</h3>
+                            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed italic" style={serifFont}>
+                                "If food waste were a country, it would be the third largest emitter of greenhouse gases."
+                            </p>
                         </GlassCard>
                     </div>
                 </div>
