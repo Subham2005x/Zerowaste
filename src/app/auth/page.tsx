@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
     Leaf,
     Mail,
@@ -115,8 +116,8 @@ export default function AuthPage() {
                                 key={tab}
                                 onClick={() => setMode(tab)}
                                 className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${mode === tab
-                                        ? "bg-[var(--color-green-primary)] text-white shadow-lg"
-                                        : "text-[var(--color-text-muted)] hover:text-white"
+                                    ? "bg-[var(--color-green-primary)] text-white shadow-lg"
+                                    : "text-[var(--color-text-muted)] hover:text-white"
                                     }`}
                             >
                                 {tab === "login" ? "Log In" : "Sign Up"}
@@ -148,14 +149,14 @@ export default function AuthPage() {
                                                         key={role.id}
                                                         onClick={() => setSelectedRole(role.id)}
                                                         className={`w-full p-3.5 rounded-xl border text-left flex items-center gap-3 transition-all duration-300 ${selectedRole === role.id
-                                                                ? "border-[var(--color-green-accent)] bg-[rgba(27,67,50,0.2)]"
-                                                                : "border-[var(--color-border-glass)] bg-[rgba(255,255,255,0.02)] hover:border-[rgba(255,255,255,0.12)]"
+                                                            ? "border-[var(--color-green-accent)] bg-[rgba(27,67,50,0.2)]"
+                                                            : "border-[var(--color-border-glass)] bg-[rgba(255,255,255,0.02)] hover:border-[rgba(255,255,255,0.12)]"
                                                             }`}
                                                     >
                                                         <div
                                                             className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${selectedRole === role.id
-                                                                    ? "text-[var(--color-green-bright)]"
-                                                                    : "text-[var(--color-text-muted)]"
+                                                                ? "text-[var(--color-green-bright)]"
+                                                                : "text-[var(--color-text-muted)]"
                                                                 }`}
                                                             style={{ background: selectedRole === role.id ? role.color : "rgba(255,255,255,0.05)" }}
                                                         >
@@ -226,8 +227,8 @@ export default function AuthPage() {
                                                     key={role.id}
                                                     onClick={() => setSelectedRole(role.id)}
                                                     className={`flex-1 py-2.5 px-2 rounded-xl border text-center transition-all duration-300 ${selectedRole === role.id
-                                                            ? "border-[var(--color-green-accent)] bg-[rgba(27,67,50,0.2)] text-white"
-                                                            : "border-[var(--color-border-glass)] text-[var(--color-text-muted)] hover:border-[rgba(255,255,255,0.12)]"
+                                                        ? "border-[var(--color-green-accent)] bg-[rgba(27,67,50,0.2)] text-white"
+                                                        : "border-[var(--color-border-glass)] text-[var(--color-text-muted)] hover:border-[rgba(255,255,255,0.12)]"
                                                         }`}
                                                 >
                                                     <div className="flex flex-col items-center gap-1.5">
@@ -328,9 +329,9 @@ export default function AuthPage() {
 
                 {/* Back to Home */}
                 <p className="text-center mt-4">
-                    <a href="/" className="text-xs text-[var(--color-text-muted)] hover:text-white transition-colors">
+                    <Link href="/" className="text-xs text-[var(--color-text-muted)] hover:text-white transition-colors">
                         ← Back to Home
-                    </a>
+                    </Link>
                 </p>
             </motion.div>
         </div>

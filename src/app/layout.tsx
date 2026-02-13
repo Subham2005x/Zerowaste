@@ -9,6 +9,28 @@ export const metadata: Metadata = {
     keywords: ["food rescue", "zero waste", "food security", "sustainability", "NGO", "volunteer"],
 };
 
+import { Cormorant_Garamond, Space_Grotesk, Inter } from "next/font/google";
+
+const cormorant = Cormorant_Garamond({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
+    variable: "--font-cormorant",
+    display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
+    variable: "--font-space-grotesk",
+    display: "swap",
+});
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
+    display: "swap",
+});
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -16,19 +38,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <head>
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link
-                    rel="preconnect"
-                    href="https://fonts.gstatic.com"
-                    crossOrigin="anonymous"
-                />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
-                    rel="stylesheet"
-                />
-            </head>
-            <body className="antialiased">
+            <body className={`${cormorant.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased`}>
                 <GlobalEffects />
                 {children}
             </body>

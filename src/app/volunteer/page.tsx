@@ -13,7 +13,6 @@ import {
     Phone,
     Navigation,
     Camera,
-    Star,
     Package,
     AlertTriangle,
     QrCode,
@@ -108,7 +107,7 @@ export default function VolunteerDashboard() {
 
                     {/* LEFT: STEP INDICATOR (2 cols) - Vertical */}
                     <div className="lg:col-span-2 hidden lg:flex flex-col gap-6 pt-8">
-                        {steps.map((step, i) => (
+                        {steps.map((step) => (
                             <button
                                 key={step.id}
                                 onClick={() => goToStep(step.id)}

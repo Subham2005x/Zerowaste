@@ -5,22 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Heart,
     Users,
-    Package,
-    Recycle,
     MapPin,
     Clock,
     Filter,
     ChevronDown,
     Truck,
-    Globe,
     ArrowRight,
     ArrowLeft,
     CheckCircle2,
     Eye,
     HandHeart,
-    Star,
     Handshake,
-    AlertTriangle,
 } from "lucide-react";
 import DashboardLayout from "@/components/ui/DashboardLayout";
 import StatCard from "@/components/ui/StatCard";
@@ -114,7 +109,7 @@ export default function NgoDashboard() {
 
                     {/* LEFT: STEP INDICATOR (2 cols) - Vertical */}
                     <div className="lg:col-span-2 hidden lg:flex flex-col gap-6 pt-8">
-                        {steps.map((step, i) => (
+                        {steps.map((step) => (
                             <button
                                 key={step.id}
                                 onClick={() => goToStep(step.id)}
@@ -414,7 +409,7 @@ export default function NgoDashboard() {
                         <GlassCard className="p-6 bg-white/[0.02]" delay={0.4}>
                             <h3 className="text-lg text-white font-light mb-4" style={serifFont}>Incoming Pickups</h3>
                             <div className="space-y-4">
-                                {incomingPickups.map((pickup, i) => (
+                                {incomingPickups.map((pickup) => (
                                     <div key={pickup.id} className="pb-3 border-b border-white/5 last:border-0 last:pb-0">
                                         <div className="flex justify-between mb-1">
                                             <span className="text-sm text-white" style={sansFont}>{pickup.foodItem}</span>

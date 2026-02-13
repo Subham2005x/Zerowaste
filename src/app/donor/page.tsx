@@ -10,15 +10,12 @@ import {
     MapPin,
     Leaf,
     Sparkles,
-    ArrowRight,
-    ArrowLeft,
     Camera,
     Bell,
     Eye,
     Package,
     PartyPopper,
     Linkedin,
-    Trash2,
 } from "lucide-react";
 import DashboardLayout from "@/components/ui/DashboardLayout";
 import StatCard from "@/components/ui/StatCard";
@@ -50,7 +47,6 @@ export default function DonorDashboard() {
     const [showScan, setShowScan] = useState(false);
     const [scanComplete, setScanComplete] = useState(false);
     const [isVeg, setIsVeg] = useState(true);
-    const [donationSubmitted, setDonationSubmitted] = useState(false);
     const [claimed, setClaimed] = useState(false);
     const [pickedUp, setPickedUp] = useState(false);
 
@@ -60,7 +56,6 @@ export default function DonorDashboard() {
     };
 
     const nextStep = () => { if (currentStep < 4) goToStep(currentStep + 1); };
-    const prevStep = () => { if (currentStep > 1) goToStep(currentStep - 1); };
 
     const handleImageUpload = () => {
         setShowScan(true);
@@ -69,7 +64,6 @@ export default function DonorDashboard() {
     };
 
     const handleSubmitDonation = () => {
-        setDonationSubmitted(true);
         setTimeout(() => nextStep(), 800);
     };
 
@@ -135,7 +129,7 @@ export default function DonorDashboard() {
 
                     {/* LEFT: STEP INDICATOR (2 cols) - Vertical on Desktop */}
                     <div className="lg:col-span-2 hidden lg:flex flex-col gap-6 pt-8">
-                        {steps.map((step, i) => (
+                        {steps.map((step) => (
                             <button
                                 key={step.id}
                                 onClick={() => goToStep(step.id)}
@@ -360,7 +354,7 @@ export default function DonorDashboard() {
                                                 </button>
                                             ) : (
                                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
-                                                    <p className="text-2xl text-[var(--color-green-bright)] font-light italic" style={serifFont}>"Generosity is the most natural outward expression of an inner attitude of compassion."</p>
+                                                    <p className="text-2xl text-[var(--color-green-bright)] font-light italic" style={serifFont}>&quot;Generosity is the most natural outward expression of an inner attitude of compassion.&quot;</p>
                                                 </motion.div>
                                             )}
                                         </div>
@@ -465,7 +459,7 @@ export default function DonorDashboard() {
                         <GlassCard className="p-6 bg-gradient-to-br from-[var(--color-editorial-green)] to-[var(--color-bg-primary)] border-none" delay={0.5}>
                             <h3 className="text-lg text-white font-light mb-2" style={serifFont}>Did you know?</h3>
                             <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed italic" style={serifFont}>
-                                "If food waste were a country, it would be the third largest emitter of greenhouse gases."
+                                &quot;If food waste were a country, it would be the third largest emitter of greenhouse gases.&quot;
                             </p>
                         </GlassCard>
                     </div>
